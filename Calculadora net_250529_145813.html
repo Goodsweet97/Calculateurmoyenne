@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculateur de Moyenne</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    main {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .input-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .destructive {
+      background-color: #e53935;
+    }
+    .destructive:hover {
+      background-color: #c62828;
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .moyenne {
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <main id="root"></main>
+
+  <!-- React and Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.20.12/babel.min.js"></script>
+
+  <script type="text/babel">
+
+    const { useState } = React;
+
+    function CalculateurMoyenne() {
+      const [lignes, setLignes] = useState([
+        { matiere: "Français", note: "", coef: 5 },
+        { matiere: "Mathématiques", note: "", coef: 7 },
+        { matiere: "Physique-Chimie", note: "", coef: 6 },
+      ]);
+
+      const ajouterLigne = () => {
+        setLignes([...lignes, { matiere: "", note: "", coef: 1 }]);
+      };
+
+      const supprimerLigne = (index) => {
+        const copie = [...lignes];
+        copie.splice(index, 1);
+        setLignes(copie);
+      };
+
+      const modifierValeur = (index, champ, valeur) => {
+        const copie = [...lignes];
+        copie[index][champ] = valeur;
+        setLignes(copie);
+      };
+
+      const totalCoef = lignes.reduce((sum, l) => sum + Number(l.coef || 0), 0);
+      const totalPoints = lignes.reduce((sum, l) => sum + (Number(l.note || 0) * Number(l.coef || 0)), 0);
+      const moyenne = totalCoef ? (totalPoints / totalCoef).toFixed(2) : "-";
+
+      return (
+        <div>
+          <h1>Calculateur de Moyenne</h1>
+
+          {lignes.map((ligne, index) => (
+            <div key={index} className="input-container">
+              <input
+                type="text"
+                placeholder="Matière"
+                value={ligne.matiere}
+                onChange={(e) => modifierValeur(index, "matiere", e.target.value)}
+              />
+              <input
+                type="number"
+                placeholder="Note"
+                value={ligne.note}
+                onChange={(e) => modifierValeur(index, "note", e.target.value)}
+              />
+              <input
+                type="number"
+                placeholder="Coefficient"
+                value={ligne.coef}
+                onChange={(e) => modifierValeur(index, "coef", e.target.value)}
+              />
+              <button className="destructive" onClick={() => supprimerLigne(index)}>Supprimer</button>
+            </div>
+          ))}
+
+          <div className="footer">
+            <button onClick={ajouterLigne}>Ajouter une matière</button>
+            <div className="moyenne">Moyenne : {moyenne}</div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.render(<CalculateurMoyenne />, document.getElementById('root'));
+
+  </script>
+
+</body>
+</html>
